@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toazt Web Proxy</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #121212;
+            font-family: Arial, sans-serif;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .tab-bar {
+            background-color: #1e1e1e;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            user-select: none;
+        }
+
+        .tab {
+            padding: 10px 15px;
+            margin-right: 5px;
+            background-color: #1e1e1e;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .tab.active {
+            background-color: orange;
+        }
+
+        .tab .close-tab {
+            margin-left: 10px;
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        .tab .close-tab:hover {
+            color: red;
+        }
+
+        #new-tab-button {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #new-tab-button:hover {
+            background: orange;
+        }
+
+        .content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        #search-box {
+            display: flex;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        #search-input {
+            width: 400px;
+            padding: 15px;
+            border: none;
+            border-radius: 25px 0 0 25px;
+            background-color: #333;
+            color: white;
+            font-size: 1rem;
+            transition: box-shadow 0.3s ease;
+        }
+
+        #search-input:focus {
+            outline: none;
+            box-shadow: 0px 0px 10px 2px orange;
+        }
+
+        #search-button {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 0 25px 25px 0;
+            background-color: orange;
+            cursor: pointer;
+        }
+
+        #search-button:hover {
+            background-color: #ff9800;
+        }
+
+        .search-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: orange;
+            margin-top: 20px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="tab-bar">
+        <div class="tab" data-id="tab-1">New Tab</div>
+        <button id="new-tab-button">+ New Tab</button>
+    </div>
+
+    <div id="content-container">
+        <div class="content" id="tab-1">
+            <div id="search-box">
+                <input type="text" id="search-input" placeholder="Enter a URL or search term">
+                <button id="search-button">🔍</button>
+            </div>
+            <div class="search-title">Toazt Web Proxy</div>
+            <iframe id="web-frame" style="display: none;"></iframe>
+        </div>
+    </div>
+
+    <script>
+        const API_ENDPOINT = "https://<your-vercel-project>.vercel.app/api/proxy"; // Replace with your Vercel deployment URL
+
+        document.getElementById('search-button').addEventListener('click', async () => {
+            const input = document.getElementById('search-input').value;
+            const iframe = document.getElementById('web-frame');
+
+            if (!input) {
+                alert("Please enter a URL or search term!");
+                return;
+            }
+
+            let url;
+            if (input.startsWith('http://') || input.startsWith('https://')) {
+                url = input;
+            } else {
+                // Assume it's a search term and perform a Google search
+                url = `https://www.google.com/search?q=${encodeURIComponent(input)}`;
+            }
+
+            try {
+                // Set the iframe's source to the proxied content
+                iframe.style.display = "block";
+                iframe.src = `${API_ENDPOINT}?url=${encodeURIComponent(url)}`;
+            } catch (error) {
+                console.error("Error loading the URL:", error);
+                alert("Failed to load the requested content.");
+            }
+        });
+    </script>
+</body>
+</html>

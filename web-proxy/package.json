@@ -1,0 +1,9 @@
+{
+    "name": "web-proxy",
+    "version": "1.0.0",
+    "main": "index.js",
+    "dependencies": {
+      "axios": "^1.0.0"
+    }
+  }
+  
